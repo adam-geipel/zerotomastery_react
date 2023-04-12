@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import { CardList } from './components/card-list/card-list';
-import { SearchBox } from './components/search-box/search-box';
+import CardList  from './components/card-list/card-list.component';
+import SearchBox from './components/search-box/search-box.component';
 import logo from './logo.svg';
 import './App.css';
-import SearchBox from "./components/search-box/search-box";
 
 class App extends Component {
   constructor() {
@@ -12,9 +11,11 @@ class App extends Component {
                     searchField: '' };
   }
 
-  onSearchChange = (event) => {
+  onSearchChange = (event) =>{
     const searchField = event.target.value.toLocaleLowerCase();
-    this.setState(() => {return { searchField }});
+    this.setState(() => {
+      return { searchField }
+    });
   }
 
   componentDidMount() {
@@ -33,9 +34,9 @@ class App extends Component {
 
     return (
       <div className='App'>
-        <SearchBox />
-
-        <CardList />
+        <h1 className='app-title'>Monsters Rolodex</h1>
+        <SearchBox className='monster-search-box' onChangeHandler={onSearchChange} placeholder='Search Monsters'/>
+        <CardList monsters={filteredMonsters}/>
       </div>
       );
   }

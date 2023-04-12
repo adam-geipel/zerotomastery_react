@@ -1,14 +1,17 @@
+import './card-list.styles.css'
+import Card from '../card/card.component'
+const CardList = (props) => {
 
+    const { monsters } = props;
 
-const CardList = () => {
     return (
-            <>
-            {/*filteredMonsters.map((monster) => {
-                return (
-                        <div key={`monster_${monster.id}`}>
-                            <h1>{monster.name}</h1>
-                        </div>);
-            */
-            <div>Card List here</div>})
-            </>)
+            <div className='card-list'>
+                { monsters.map((monster) => {
+                    return (
+                            <Card monster={monster} />
+                        );
+                })}
+            </div>);
 }
+
+export default CardList;
