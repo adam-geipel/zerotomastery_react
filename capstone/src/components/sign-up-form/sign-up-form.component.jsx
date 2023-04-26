@@ -71,7 +71,7 @@ const SignUpForm = () => {
     <div className="sign-up-form-container">
       <h2>Don't have an account?</h2>
       <span>Sign up with your email address and password</span>
-      <p>{registerError}</p>
+      <p className="error">{registerError}</p>
       <form>
         <FormInput
           label="Display Name"

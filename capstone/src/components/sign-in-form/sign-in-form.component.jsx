@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   signInWithGooglePopup,
   createUserDocumentFromAuth,
+  signInAuthUserWithEmailAndPassword,
 } from "../../utils/firebase/firebase.utils";
 
 import Button from "../../components/button/button.component";
@@ -21,6 +22,7 @@ const logGoogleUser = async () => {
 
 const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const [errorMessage, setErrorMessage] = useState("");
   const { email, password } = formFields;
 
   const resetFormFields = () => {
@@ -35,15 +37,35 @@ const SignInForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    alert("here!");
+    setErrorMessage("");
+    console.log(`email:${email}, password:${password}`);
+    try {
+      const auth = await signInAuthUserWithEmailAndPassword(email, password);
+      console.log(auth);
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      switch (error.code) {
+        case "auth/wrong-password":
+        case "auth/user-not-found":
+          setErrorMessage("Email or password incorrect.");
+          break;
+        case "auth/invalid-email":
+          setErrorMessage("Invalid Email address.");
+          break;
+        default:
+          console.log(error);
+      }
+    } finally {
+      resetFormFields();
+    }
   };
 
   return (
-    <div className="sign-in-form-container">
-      <div>Sign in</div>
-      <h2>I already have an account</h2>
+    <div className="sign-in-container">
+      <h2>Already have an account?</h2>
       <span>Sign in with your email and password</span>
-      <form>
+      <p className="error">{errorMessage}</p>
+      <form onSubmit={handleSubmit}>
         <FormInput
           type="text"
           name="email"
@@ -60,12 +82,12 @@ const SignInForm = () => {
           value={password}
           onChange={handleChange}
         />
-        <Button type="submit" onClick={handleSubmit}>
-          Sign in with Email
-        </Button>
-        <Button onClick={logGoogleUser} buttonType="google">
-          Sign in with Google
-        </Button>
+        <div className="buttons-container">
+          <Button type="submit">Sign In</Button>
+          <Button type="button" onClick={logGoogleUser} buttonType="google">
+            Google Sign In
+          </Button>
+        </div>
       </form>
     </div>
   );
