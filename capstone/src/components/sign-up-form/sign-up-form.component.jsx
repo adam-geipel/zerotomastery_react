@@ -1,9 +1,12 @@
-import React from "react";
+import { useState } from "react";
 import FormInput from "../form-input/form-input.component";
+import Button from "../button/button.component";
 import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
+
+import "./sign-up-form.styles.scss";
 
 const defaultFormFields = {
   displayName: "",
@@ -13,10 +16,15 @@ const defaultFormFields = {
 };
 
 const SignUpForm = () => {
-  const [formFields, setFormFields] = React.useState({ defaultFormFields });
+  const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
-  const [registerError, setRegisterError] = React.useState("");
-  const [isSubmitting, setSubmitting] = React.useState(false);
+
+  const [registerError, setRegisterError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const resetFormFields = () => {
+    setFormFields(defaultFormFields);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -29,7 +37,7 @@ const SignUpForm = () => {
     setRegisterError("");
     setSubmitting(true);
 
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setRegisterError("You have entered an invalid email address");
       setSubmitting(false);
       return;
@@ -53,40 +61,53 @@ const SignUpForm = () => {
       console.log("Unable to register new user", error.message);
       if (error.code === "auth/email-already-in-use") {
         setRegisterError("Unable to create user. User already exists.");
-        alert("User already in use.");
       }
       setSubmitting(false);
-      return;
+      resetFormFields();
     }
   };
 
   return (
-    <div>
-      <h1>Sign up with your email address and password</h1>
+    <div className="sign-up-form-container">
+      <h2>Don't have an account?</h2>
+      <span>Sign up with your email address and password</span>
       <p>{registerError}</p>
       <form>
         <FormInput
+          label="Display Name"
           name="displayName"
           type="text"
           required
+          value={displayName}
           onChange={handleChange}
         />
-        <FormInput name="email" type="text" required onChange={handleChange} />
         <FormInput
+          label="Email"
+          name="email"
+          type="text"
+          required
+          value={email}
+          onChange={handleChange}
+        />
+        <FormInput
+          label="Password"
           name="password"
           type="password"
           required
+          value={password}
           onChange={handleChange}
         />
         <FormInput
+          label="Confirm Password"
           name="confirmPassword"
           type="password"
           required
+          value={confirmPassword}
           onChange={handleChange}
         />
-        <button type="submmit" onClick={handleSubmit} disabled={isSubmitting}>
+        <Button type="submmit" onClick={handleSubmit} disabled={isSubmitting}>
           Submit
-        </button>
+        </Button>
       </form>
     </div>
   );
