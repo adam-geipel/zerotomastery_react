@@ -8,7 +8,7 @@ import {
 import Button from "../../components/button/button.component";
 import FormInput from "../../components/form-input/form-input.component";
 
-import { UserContext } from "../user.contexts";
+import { UserContext } from "../user.context";
 
 import "./sign-in-form.styles.scss";
 

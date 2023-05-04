@@ -7,7 +7,7 @@ import {
 } from "../../utils/firebase/firebase.utils";
 
 import "./sign-up-form.styles.scss";
-import { UserContext } from "../user.contexts";
+import { UserContext } from "../user.context";
 
 const defaultFormFields = {
   displayName: "",

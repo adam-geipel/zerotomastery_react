@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { UserProvider } from "./components/user.contexts";
+import { UserProvider } from "./components/user.context";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 const rootElement = document.getElementById("root");
