@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   signInWithGooglePopup,
   createUserDocumentFromAuth,
@@ -8,6 +8,8 @@ import {
 import Button from "../../components/button/button.component";
 import FormInput from "../../components/form-input/form-input.component";
 
+import { UserContext } from "../user.contexts";
+
 import "./sign-in-form.styles.scss";
 
 const defaultFormFields = {
@@ -15,15 +17,17 @@ const defaultFormFields = {
   password: "",
 };
 
-const logGoogleUser = async () => {
-  const { user } = await signInWithGooglePopup();
-  const userDocRef = await createUserDocumentFromAuth(user);
-};
-
 const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const [errorMessage, setErrorMessage] = useState("");
   const { email, password } = formFields;
+
+  const { setCurrentUser } = useContext(UserContext);
+
+  const signInWithGoogle = async () => {
+    const { user } = await signInWithGooglePopup();
+    setCurrentUser(user);
+  };
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
@@ -40,8 +44,11 @@ const SignInForm = () => {
     setErrorMessage("");
     console.log(`email:${email}, password:${password}`);
     try {
-      const auth = await signInAuthUserWithEmailAndPassword(email, password);
-      console.log(auth);
+      const { auth } = await signInAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+      setCurrentUser(auth);
     } catch (error) {
       console.log(JSON.stringify(error));
       switch (error.code) {
@@ -84,7 +91,7 @@ const SignInForm = () => {
         />
         <div className="buttons-container">
           <Button type="submit">Sign In</Button>
-          <Button type="button" onClick={logGoogleUser} buttonType="google">
+          <Button type="button" onClick={signInWithGoogle} buttonType="google">
             Google Sign In
           </Button>
         </div>

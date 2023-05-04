@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import {
@@ -7,6 +7,7 @@ import {
 } from "../../utils/firebase/firebase.utils";
 
 import "./sign-up-form.styles.scss";
+import { UserContext } from "../user.contexts";
 
 const defaultFormFields = {
   displayName: "",
@@ -21,6 +22,8 @@ const SignUpForm = () => {
 
   const [registerError, setRegisterError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+
+  const { setCurrentUser } = useContext(UserContext);
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
@@ -57,11 +60,14 @@ const SignUpForm = () => {
       await createUserDocumentFromAuth(user, {
         displayName,
       });
+
+      setCurrentUser(user);
     } catch (error) {
       console.log("Unable to register new user", error.message);
       if (error.code === "auth/email-already-in-use") {
         setRegisterError("Unable to create user. User already exists.");
       }
+    } finally {
       setSubmitting(false);
       resetFormFields();
     }
